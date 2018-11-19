@@ -2,20 +2,14 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
-
 typedef int buffer_item;
 #define BUFFER_SIZE 5
 
-#define TRUE 1
 
 buffer_item buffer[BUFFER_SIZE];
-
-pthread_t thread1;
-pthread_t thread2;
-
-pthread_mutex_t mutex;
 sem_t empty;
 sem_t full;
+pthread_mutex_t mutex;
 
 int insertval = 0, removeval = 0;
 
@@ -24,17 +18,20 @@ void *consumer(void *params);
 
 int insert_item(buffer_item item)
 {
-    int ret_n = 0;
+    int ret_n;
     sem_wait(&empty);
     pthread_mutex_lock(&mutex);
     if (insertval < BUFFER_SIZE)
     {
-        buffer[insertval++] = item;
-        insertval = insertval % 5;
+        ret_n = 0;
+        buffer[insertval] = item;
+        insertval++;
+        insertval = insertval % BUFFER_SIZE;
     }
     else
     {
         ret_n = -1;
+        fprintf(stderr, "===== ERROR: Buffer Full ===== \n");
     }
     pthread_mutex_unlock(&mutex);
     sem_post(&full);
@@ -44,25 +41,29 @@ int insert_item(buffer_item item)
 
 int remove_item(buffer_item *item)
 {
-    int ret_n;
+    int ret_n = 0;
     sem_wait(&full);
 
     pthread_mutex_lock(&mutex);
-    if (insertval > 0) 
-    {
+    if (removeval < BUFFER_SIZE && removeval >= 0)
+    {   
+        ret_n = 0;
         *item = buffer[removeval];
-        buffer[removeval++] = -1;
-        removeval = removeval % 5;
+        buffer[removeval] = 0;
+        removeval++;
+        removeval = removeval % BUFFER_SIZE;
     } 
-    else 
+    else
     {
         ret_n = -1;
+        fprintf(stderr, "===== ERROR: Buffer Empty ===== \n");
     }
     pthread_mutex_unlock(&mutex);
     sem_post(&empty);
 
     return ret_n;
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -81,7 +82,7 @@ int main(int argc, char *argv[])
 
     /* Initialize the synchronization tools */
     pthread_mutex_init(&mutex, NULL);
-    sem_init(&empty, 0, 5);
+    sem_init(&empty, 0, BUFFER_SIZE);
     sem_init(&full, 0, 0);
     srand(time(0));
 
@@ -114,7 +115,7 @@ void *producer(void *param)
 
     while(1)
     {
-        rn = rand() % 5;
+        rn = rand() % 4;
         sleep(rn);
         item = rand();
 
@@ -137,7 +138,7 @@ void *consumer(void *param)
 
     while(1)
     {
-        rn = rand() % 5;
+        rn = rand() % 4;
         sleep(rn);
 
         if(remove_item(&item))
