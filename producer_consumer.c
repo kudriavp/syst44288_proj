@@ -82,7 +82,8 @@ void *producer(void *param)
 {
     buffer_item item;
     int rn;
-
+    /* While loop that will help the producer thread to alternate between sleeping for a random period of time and inserting a 
+       random integer into the buffer using the insert_item function. */
     while(1)
     {
         rn = rand() % 4;
@@ -105,7 +106,8 @@ void *consumer(void *param)
 {
     buffer_item item;
     int rn;
-
+    /* While loop that will help the consumer thread sleep for a random period of time but upon awakening, the consumer thread 
+       will attempt to remove an item from the buffer using the remove_item function. */
     while(1)
     {
         rn = rand() % 4;
