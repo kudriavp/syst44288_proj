@@ -7,9 +7,9 @@ typedef int buffer item;
 #define BUFFER SIZE 5;
 
 
-sem_t empty;
-sem_t full;
-sem_t mutex;
+sem_t s_empty;
+sem_t s_full;
+pthread_mutex_t mutex;
 
 void *producer(void *param) {
  buffer item item;
