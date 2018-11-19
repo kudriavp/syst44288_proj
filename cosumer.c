@@ -51,3 +51,26 @@ void producer(void)
         mutex=signal(mutex);
     }
 }
+void consumer(void)
+{
+    unsigned int run_cnt;
+    unsigned int exec_period_usecs;
+    struct timeval ts;
+
+    exec_period_usecs = 3000000; /in micro-seconds/
+
+    printf("Thread 2 started. Execution period = %d uSecs\n",\
+                                           exec_period_usecs);
+    run_cnt = 0;
+
+    while(1)
+    {
+        usleep(exec_period_usecs);
+        mutex=wait(mutex);
+        full=wait(full);
+        empty=signal(empty);
+        printf("\nT2. Consumer consumes item %d",x);
+        x--;
+        mutex=signal(mutex);
+    }
+}
