@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
+// The internal buffer defined by a typedef consisting of a fixed-size array
 typedef int buffer_item;
 #define BUFFER_SIZE 5
 
@@ -15,10 +16,15 @@ int insertval = 0, removeval = 0;
 void *producer(void *params);
 void *consumer(void *params);
 
+/* The following code is the insert_item function which will manipulate the buffer and gets called by the producer and consumer
+   processes, respectively. */
 int insert_item(buffer_item item)
 {
     int ret_n;
+    /* Puts semaphore 'empty' into a waiting state, waiting to see if the following if statement will return successful(0),
+       or or an error condition(-1). */
     sem_wait(&empty);
+    // Locks the mutual-exclusion object 'mutex'
     pthread_mutex_lock(&mutex);
     if (insertval < BUFFER_SIZE)
     {
@@ -32,17 +38,23 @@ int insert_item(buffer_item item)
         ret_n = -1;
         fprintf(stderr, "===== ERROR: Buffer Full ===== \n");
     }
+    // Unlocks the mutual-exclusion object 'mutex'
     pthread_mutex_unlock(&mutex);
+    // Increment the value of semaphore 'full' and wakes up the blocked process waiting on this one
     sem_post(&full);
-
+    // Returns the result if adding the object to the buffer was successful or not
     return ret_n;
 }
 
+/* The following code is the remove_item function which will manipulate the buffer and gets called by the producer and consumer
+   processes, respectively. */
 int remove_item(buffer_item *item)
 {
     int ret_n = 0;
+    /* Puts semaphore 'full' into a waiting state, waiting to see if the following if statement will return successful(0),
+       or or an error condition(-1). */
     sem_wait(&full);
-
+    // Locks the mutual-exclusion object 'mutex'
     pthread_mutex_lock(&mutex);
     if (removeval < BUFFER_SIZE && removeval >= 0)
     {   
@@ -57,12 +69,15 @@ int remove_item(buffer_item *item)
         ret_n = -1;
         fprintf(stderr, "===== ERROR: Buffer Empty ===== \n");
     }
+    // Unlocks the mutual-exclusion object 'mutex'
     pthread_mutex_unlock(&mutex);
+    // Increment the value of semaphore 'empty' and wakes up the blocked process waiting on this one
     sem_post(&empty);
-
+    // Returns the result if removing the object from the buffer was successful or not
     return ret_n;
 }
 
+//The following code is the producer process
 void *producer(void *param)
 {
     buffer_item item;
@@ -85,6 +100,7 @@ void *producer(void *param)
     }
 }
 
+// The following code is the consumer process
 void *consumer(void *param)
 {
     buffer_item item;
