@@ -47,17 +47,20 @@ int insert_item(buffer_item item)
     // Increment the value of semaphore 'full' and wakes up the blocked process waiting on this one
     sem_post(&full);
     
-    // Returns the result if adding the object to buffer was successful or not
+    // Returns the result if adding the object to the buffer was successful or not
     return ret_n;
 }
+
 
 /* The following code is the remove_item function which will manipulate the buffer and gets called by the producer and consumer
    processes, respectively. */
 int remove_item(buffer_item *item)
 {
     int ret_n;
+    /* Puts semaphore 'full' into a waiting state, waiting to see if the following if statement will return successful(0),
+       or or an error condition(-1). */
     sem_wait(&full);
-
+    // Locks the mutual-exclusion object 'mutex'
     pthread_mutex_lock(&mutex);
     if (insertval > 0) 
     {
@@ -69,9 +72,11 @@ int remove_item(buffer_item *item)
     {
         ret_n = -1;
     }
+    // Unlocks the mutual-exclusion object 'mutex'
     pthread_mutex_unlock(&mutex);
+    // Increment the value of semaphore 'empty' and wakes up the blocked process waiting on this one
     sem_post(&empty);
-
+    // Returns the result if removing the object from the buffer was successful or not
     return ret_n;
 }
 
