@@ -122,6 +122,12 @@ void *consumer(void *param)
     }
 }
 
+/* The following code is the main function which will initialize the buffer and create the separate producer and consumer threads. After
+   the producer and consumer threads are created, this main function will sleep for a period of time and, upon awakening, will terminate
+   the application. The three parameters that are passed to this main function from the command line are:
+   1. How long to sleep before terminating
+   2. The number of producer threads
+   3. The number of consumer threads */
 int main(int argc, char *argv[])
 {
     int runtime, prodtd, constd;
@@ -133,6 +139,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    // Acquire all of the appropriate command line arguments and initialize them into variables
     runtime = atoi(argv[1]);
     prodtd = atoi(argv[2]);
     constd = atoi(argv[3]);
