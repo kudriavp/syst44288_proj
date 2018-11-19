@@ -5,7 +5,6 @@
 typedef int buffer_item;
 #define BUFFER_SIZE 5
 
-
 buffer_item buffer[BUFFER_SIZE];
 sem_t empty;
 sem_t full;
@@ -64,50 +63,6 @@ int remove_item(buffer_item *item)
     return ret_n;
 }
 
-
-int main(int argc, char *argv[])
-{
-    int runtime, prodtd, constd;
-    int i, j;
-
-    if(argc != 4)
-    {
-        fprintf(stderr, "Please input as args: Run time, Producer threads, Consumer threads\n");
-        return -1;
-    }
-
-    runtime = atoi(argv[1]);
-    prodtd = atoi(argv[2]);
-    constd = atoi(argv[3]);
-
-    /* Initialize the synchronization tools */
-    pthread_mutex_init(&mutex, NULL);
-    sem_init(&empty, 0, BUFFER_SIZE);
-    sem_init(&full, 0, 0);
-    srand(time(0));
-
-    /* Create the producer and consumer threads */
-    for(i = 0; i < prodtd; i++)
-    {
-        pthread_t tid;
-        pthread_attr_t attr;
-        pthread_attr_init(&attr);
-        pthread_create(&tid, &attr, producer, NULL);
-    }
-
-    for(j = 0; j < constd; j++)
-    {
-        pthread_t tid;
-        pthread_attr_t attr;
-        pthread_attr_init(&attr);
-        pthread_create(&tid, &attr, consumer, NULL);
-    }
-
-    /* Sleep for user specified time */
-    sleep(runtime);
-    return 0;
-}
-
 void *producer(void *param)
 {
     buffer_item item;
@@ -150,4 +105,47 @@ void *consumer(void *param)
             printf("Consumer consumed %d \n", item);
         }
     }
+}
+
+int main(int argc, char *argv[])
+{
+    int runtime, prodtd, constd;
+    int i, j;
+
+    if(argc != 4)
+    {
+        fprintf(stderr, "Please input as args: Run time, Producer threads, Consumer threads\n");
+        return -1;
+    }
+
+    runtime = atoi(argv[1]);
+    prodtd = atoi(argv[2]);
+    constd = atoi(argv[3]);
+
+    /* Initialize the synchronization tools */
+    pthread_mutex_init(&mutex, NULL);
+    sem_init(&empty, 0, BUFFER_SIZE);
+    sem_init(&full, 0, 0);
+    srand(time(0));
+
+    /* Create the producer and consumer threads */
+    for(i = 0; i < prodtd; i++)
+    {
+        pthread_t tid;
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        pthread_create(&tid, &attr, producer, NULL);
+    }
+
+    for(j = 0; j < constd; j++)
+    {
+        pthread_t tid;
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        pthread_create(&tid, &attr, consumer, NULL);
+    }
+
+    /* Sleep for user specified time */
+    sleep(runtime);
+    return 0;
 }
