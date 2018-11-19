@@ -148,4 +148,8 @@ int main(int argc, char *argv[])
     /* Sleep for user specified time */
     sleep(runtime);
     return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bb17ac7a071619d87cf64e7748eaec7ba3d5fde0
