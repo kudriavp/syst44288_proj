@@ -3,37 +3,21 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include "buffer.h"
-typedef int buffer item;
-#define BUFFER SIZE 5;
+typedef int buffer_item;
+#define BUFFER_SIZE 5;
 
 
 sem_t s_empty;
 sem_t s_full;
 pthread_mutex_t mutex;
 
-void *producer(void *param) {
- buffer item item;
+int insert_ptr=0, remove_ptr=0;
 
- while (true) {
- /* sleep for a random period of time */
- sleep(...);
- /* generate a random number */
- item = rand();
- if (insert item(item))
- fprintf("report error condition");
- else
- printf("producer produced %d\n",item);
- }
+int insertItem(buffer_item item)
+/*insert item into the buffer*/
+{
+    int x=0;
+    sem_wait(&empty);
 }
-void *consumer(void *param) {
- buffer item item;
 
- while (true) {
- /* sleep for a random period of time */
- sleep(...);
- if (remove item(&item))
- fprintf("report error condition");
- else
- printf("consumer consumed %d\n",item);
- }
-}
+
