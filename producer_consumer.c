@@ -86,7 +86,7 @@ int remove_item(buffer_item *item)
     return ret_n;
 }
 
-//The following code is the producer process
+// The following code is the producer process
 void *producer(void *param)
 {
     buffer_item item;
