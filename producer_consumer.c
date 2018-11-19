@@ -4,8 +4,8 @@
 #include <semaphore.h>
 
 typedef int buffer_item;
-#define BUFFER_SIZE 5
 
+#define BUFFER_SIZE 5
 #define TRUE 1
 
 buffer_item buffer[BUFFER_SIZE];
@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+//The following code is the producer process 
 void *producer(void *param)
 {
     buffer_item item;
@@ -130,6 +131,7 @@ void *producer(void *param)
 
 }
 
+// The following code is the consumer process
 void *consumer(void *param)
 {
     buffer_item item;
