@@ -86,6 +86,29 @@ int remove_item(buffer_item *item)
     return ret_n;
 }
 
+// The following code is the consumer process
+void *consumer(void *param)
+{
+    buffer_item item;
+    int rn;
+    /* While loop that will help the consumer thread sleep for a random period of time but upon awakening, the consumer thread 
+       will attempt to remove an item from the buffer using the remove_item function. */
+    while(1)
+    {
+        rn = rand() % 4;
+        sleep(rn);
+
+        if(remove_item(&item))
+        {
+            fprintf(stderr, "Consumer error\n");
+        }
+        else
+        {
+            printf("Consumer consumed %d \n", item);
+        }
+    }
+}
+
 // The following code is the producer process
 void *producer(void *param)
 {
@@ -106,29 +129,6 @@ void *producer(void *param)
         else
         {
             printf("Producer produced %d\n", item);
-        }
-    }
-}
-
-// The following code is the consumer process
-void *consumer(void *param)
-{
-    buffer_item item;
-    int rn;
-    /* While loop that will help the consumer thread sleep for a random period of time but upon awakening, the consumer thread 
-       will attempt to remove an item from the buffer using the remove_item function. */
-    while(1)
-    {
-        rn = rand() % 4;
-        sleep(rn);
-
-        if(remove_item(&item))
-        {
-            fprintf(stderr, "Consumer error\n");
-        }
-        else
-        {
-            printf("Consumer consumed %d \n", item);
         }
     }
 }
