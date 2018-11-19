@@ -27,8 +27,11 @@ void *consumer(void *params);
    processes, respectively. */
 int insert_item(buffer_item item)
 {
-    int ret_n = 0;
+    int ret_n = 0;   
+    /* Puts semaphore 'empty' into a waiting state, waiting to see if the following if statement will return successful(0),
+       or or an error condition(-1). */
     sem_wait(&empty);
+    // Locks the mutual-exclusion object 'mutex' 
     pthread_mutex_lock(&mutex);
     if (insertval < BUFFER_SIZE)
     {
@@ -39,9 +42,12 @@ int insert_item(buffer_item item)
     {
         ret_n = -1;
     }
+    // Unlocks the mutual-exclusion object 'mutex'
     pthread_mutex_unlock(&mutex);
+    // Increment the value of semaphore 'full' and wakes up the blocked process waiting on this one
     sem_post(&full);
-
+    
+    // Returns the result if adding the object to buffer was successful or not
     return ret_n;
 }
 
