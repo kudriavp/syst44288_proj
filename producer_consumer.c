@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+// The internal buffer defined by a typedef consisting of a fixed-size array
 typedef int buffer_item;
 
 #define BUFFER_SIZE 5
@@ -22,6 +23,8 @@ int insertval = 0, removeval = 0;
 void *producer(void *params);
 void *consumer(void *params);
 
+/* The following code is the insert_item function which will manipulate the buffer and gets called by the producer and consumer
+   processes, respectively. */
 int insert_item(buffer_item item)
 {
     int ret_n = 0;
@@ -42,6 +45,8 @@ int insert_item(buffer_item item)
     return ret_n;
 }
 
+/* The following code is the remove_item function which will manipulate the buffer and gets called by the producer and consumer
+   processes, respectively. */
 int remove_item(buffer_item *item)
 {
     int ret_n;
