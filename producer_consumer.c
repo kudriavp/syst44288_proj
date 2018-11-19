@@ -1,3 +1,12 @@
+/*   
+
+ SYST4428 - OPERATING SYSTEMS DESIGN & SYSTEMS PROGRAMMING 
+                TERM PROJECT - SEMAPHORES
+               PROFESSOR: CRISTINA RIBEIRO
+BY: PAVEL KUDRIAVTCEV, HERIT GILL KULLAR, AND ALEX DICLEMENTE 
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
