@@ -29,3 +29,25 @@ int signal(int s)
 {
     return(++s);
 }
+void producer(void)
+{
+    unsigned int run_cnt;
+    unsigned int exec_period_usecs;
+    struct timeval ts;
+
+    exec_period_usecs = 1000000; /in micro-seconds/
+
+    printf("Thread 1 started. Execution period = %d uSecs\n",\exec_period_usecs);
+    run_cnt = 0;
+
+    while(1)
+    {
+        usleep(exec_period_usecs);
+        mutex=wait(mutex);
+        full=signal(full);
+        empty=wait(empty);
+        x++;
+        printf("\nT1. Producer produces the item %d",x);
+        mutex=signal(mutex);
+    }
+}
