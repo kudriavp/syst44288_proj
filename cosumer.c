@@ -14,11 +14,15 @@ pthread_mutex_t mutex;
 
 int insert_ptr=0, remove_ptr=0;
 
-int insertItem(buffer_item item)
+/*int insertItem(buffer_item item)
 /*insert item into the buffer*/
-{
+/*{
     int x=0;
     sem_wait(&s_empty);
-}
+}*/
 
+int wait(int s)
+{
+    return (--s);
+}
 
